@@ -17,5 +17,6 @@ export const users = pgTable("users", {
   ...timestamps,
 });
 
+export type UserRole = "ADMIN" | "USER" | "STORE_OWNER";
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
