@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { userRoleEnum } from "../db/schema/users";
+import { UserRoleSchema, type UserRole } from "../db/schema";
 
 export const passwordSchema = z
   .string()
@@ -21,7 +21,7 @@ export const signupSchema = z.object({
   address: z.string().max(400, "Address must be at most 400 characters"),
 
   password: passwordSchema,
-  role: z.enum(Object.values(userRoleEnum)).optional(),
+  role: UserRoleSchema.optional(),
 });
 
 export const signinSchema = z.object({

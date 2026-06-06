@@ -6,7 +6,7 @@ import {
   signin,
   signupNormalUser,
 } from "../controllers/auth-controllers";
-import { validateWithZod } from "../middlewares/validation-middlewares";
+import { validator } from "../middlewares/validation-middlewares";
 import {
   signinSchema,
   signupSchema,
@@ -19,12 +19,12 @@ const authRouter = Router();
 // registers user with role "USER" which is normal user
 authRouter.post(
   "/users/signup",
-  validateWithZod(signupSchema),
+  validator({ bodyParser: signupSchema }),
   signupNormalUser,
 );
 
 // single route for login user all users
-authRouter.post("/signin", validateWithZod(signinSchema), signin);
+authRouter.post("/signin", validator({ bodyParser: signinSchema }), signin);
 
 //protected routes
 authRouter.get("/me", verifyJWT, getCurrentUser);
@@ -32,7 +32,7 @@ authRouter.post("/logout", verifyJWT, logout);
 authRouter.patch(
   "/change-password",
   verifyJWT,
-  validateWithZod(changePasswordSchema),
+  validator({ bodyParser: changePasswordSchema }),
   changePassword,
 );
 
