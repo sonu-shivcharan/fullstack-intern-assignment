@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/async-handler";
 import ApiError from "../utils/api-error";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import type { UserRole } from "../db/schema/users";
+import type { NextFunction, Request, Response } from "express";
 
 export type userJwtPayload = {
   id: number;
@@ -16,7 +17,7 @@ declare global {
   }
 }
 
-export const verifyJWT = asyncHandler(async (req, res, next) => {
+export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
   const token: string =
     req.cookies.accessToken ||
     req.headers.authorization?.replace("Bearer ", "");
@@ -39,4 +40,15 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     role: decodedToken.role,
   };
   next();
-});
+};
+
+export const verifyAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!req.user || req.user.role !== "ADMIN") {
+    throw new ApiError(401, "Unauthorized");
+  }
+  next();
+};
