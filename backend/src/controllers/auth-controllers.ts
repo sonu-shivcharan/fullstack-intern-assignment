@@ -87,7 +87,7 @@ export const signin = asyncHandler(async (req, res) => {
   return res
     .cookie("accessToken", accessToken, {
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "lax",
       secure: process.env.NODE_ENV !== "development",
       maxAge: 1000 * 60 * 60, // 1 hour
     })
