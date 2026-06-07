@@ -1,6 +1,5 @@
-import { asyncHandler } from "../utils/async-handler";
 import ApiError from "../utils/api-error";
-import jwt, { type JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import type { UserRole } from "../db/schema/users";
 import type { NextFunction, Request, Response } from "express";
 
@@ -51,4 +50,21 @@ export const verifyAdmin = (
     throw new ApiError(401, "Unauthorized");
   }
   next();
+};
+
+export const requiredRole = (roles: UserRole[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      throw new ApiError(401, "Unauthorized");
+    }
+    if (!roles.includes(req.user.role)) {
+      throw new ApiError(
+        401,
+        "Unauthorized Access",
+        `Required Role: ${roles.join("|")}`,
+      );
+    }
+
+    next();
+  };
 };
