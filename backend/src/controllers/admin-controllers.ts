@@ -43,6 +43,7 @@ const createUser = asyncHandler(async (req, res) => {
 
   const [createdUser] = await db.insert(users).values(newUserData).returning({
     id: users.id,
+    name: users.name,
     email: users.email,
     address: users.address,
     role: users.role,
@@ -112,26 +113,26 @@ const getAllUsers = asyncHandler(async (req, res) => {
 const createStore = asyncHandler(async (req, res) => {
   const { name, email, address, ownerId }: NewStore = req.body;
 
-  const [existingOwner] = await db
+  const [existingUser] = await db
     .select()
     .from(users)
-    .where(eq(users.email, email))
+    .where(eq(users.id, ownerId))
     .limit(1);
 
-  if (existingOwner?.role !== "STORE_OWNER") {
+  if (!existingUser) {
+    throw new ApiError(404, "User with id does not exists");
+  }
+  if (existingUser?.role !== "STORE_OWNER") {
     throw new ApiError(400, "User role should STORE_OWNER");
   }
 
-  if (!existingOwner) {
-    throw new ApiError(404, "User with id does not exists");
-  }
-  const [existingOwnerStore] = await db
+  const [existingStore] = await db
     .select()
     .from(stores)
     .where(eq(stores.ownerId, ownerId))
     .limit(1);
 
-  if (!existingOwnerStore) {
+  if (existingStore) {
     throw new ApiError(400, "Owner is already associated with other store.");
   }
 
