@@ -6,6 +6,13 @@ import { asyncHandler } from "../utils/async-handler";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
+import type { CookieOptions } from "express";
+
+const cookieOptions: CookieOptions = {
+  httpOnly: true,
+  sameSite: "none",
+  secure: true,
+};
 
 async function generateAccessToken(userId: number, userRole: UserRole) {
   try {
@@ -86,9 +93,7 @@ export const signin = asyncHandler(async (req, res) => {
   const { password, ...userWithoutPassword } = user;
   return res
     .cookie("accessToken", accessToken, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV !== "development",
+      ...cookieOptions,
       maxAge: 1000 * 60 * 60, // 1 hour
     })
     .status(200)
@@ -126,11 +131,7 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
 
 export const logout = asyncHandler(async (req, res) => {
   return res
-    .clearCookie("accessToken", {
-      httpOnly: true,
-      sameSite: "none",
-      secure: process.env.NODE_ENV !== "development",
-    })
+    .clearCookie("accessToken", cookieOptions)
     .status(200)
     .json(new ApiResponse({}, "Logout success"));
 });
