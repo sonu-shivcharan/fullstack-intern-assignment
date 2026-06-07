@@ -57,10 +57,10 @@ export const storeOwnerDashBoard = asyncHandler(async (req, res) => {
       email: stores.email,
       address: stores.address,
       averageRating: avg(ratings.rating),
-      totalRatings: count(),
+      totalRatings: count(ratings.id),
     })
     .from(stores)
-    .innerJoin(ratings, eq(ratings.storeId, stores.id))
+    .leftJoin(ratings, eq(ratings.storeId, stores.id))
     .where(eq(stores.ownerId, ownerId))
     .groupBy(stores.id);
 
