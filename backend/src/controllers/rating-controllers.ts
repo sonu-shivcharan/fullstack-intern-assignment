@@ -1,6 +1,6 @@
-import { and, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { db } from "../db";
-import { ratings, type NewRating } from "../db/schema";
+import { ratings, users, type NewRating } from "../db/schema";
 import ApiError from "../utils/api-error";
 import { asyncHandler } from "../utils/async-handler";
 import { ApiResponse } from "../utils/api-response";
@@ -79,5 +79,43 @@ export const editRating = asyncHandler(async (req, res) => {
         "Rating updated successfully",
         200,
       ),
+    );
+});
+
+export const getRatingsbyStoreId = asyncHandler(async (req, res) => {
+  const { storeId } = req.params;
+  const query = req.validatedQuery as any;
+
+  const page = query?.page || 1;
+  const limit = query?.limit || 10;
+  const offset = (page - 1) * limit;
+  const order = query?.order || "asc";
+
+  const orderByExpression =
+    order === "desc" ? desc(ratings.createdAt) : asc(ratings.createdAt);
+
+  const allRatings = await db
+    .select({
+      id: ratings.id,
+      rating: ratings.rating,
+      review: ratings.review,
+      createdAt: ratings.createdAt,
+      updatedAt: ratings.updatedAt,
+      user: {
+        id: users.id,
+        name: users.name,
+      },
+    })
+    .from(ratings)
+    .innerJoin(users, eq(users.id, ratings.userId))
+    .where(eq(ratings.storeId, Number(storeId)))
+    .orderBy(orderByExpression)
+    .limit(limit)
+    .offset(offset);
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse({ ratings: allRatings }, "Stores fetched successfully"),
     );
 });

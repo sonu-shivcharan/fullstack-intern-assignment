@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { requiredRole, verifyJWT } from "../middlewares/auth-middlewares";
-import { createRating, editRating } from "../controllers/rating-controllers";
+import {
+  createRating,
+  editRating,
+  getRatingsbyStoreId,
+} from "../controllers/rating-controllers";
 import { validator } from "../middlewares/validation-middlewares";
 import {
   createRatingBodySchema,
@@ -12,6 +16,8 @@ import { storeIdParamSchema } from "../validations/store-validations";
 const ratingRouter = Router();
 
 ratingRouter.use(verifyJWT, requiredRole(["USER", "STORE_OWNER"]));
+
+ratingRouter.get("/:storeId", getRatingsbyStoreId);
 
 ratingRouter.post(
   "/:storeId",
