@@ -1,6 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import SignInForm from "@/components/auth/SignInForm";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
 export const Route = createFileRoute("/(auth)/signin")({
   component: SigninPage,
@@ -8,7 +13,7 @@ export const Route = createFileRoute("/(auth)/signin")({
 
 function SigninPage() {
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-6 bg-background">
+    <div className="flex min-h-screen w-full items-center justify-center bg-background p-6">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Welcome back</CardTitle>

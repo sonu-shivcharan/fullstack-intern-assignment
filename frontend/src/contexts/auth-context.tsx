@@ -2,7 +2,7 @@ import React, { createContext, useContext } from "react";
 import type { User, UserRole } from "@/types/user";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCurrentUser } from "@/helpers/auth-helpers";
-import LoaderPage from "@/components/ui/loader-page";
+import LoaderPage from "@/components/ui/loader";
 
 interface AuthContextType {
   user: User | null;
