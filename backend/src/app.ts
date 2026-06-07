@@ -26,10 +26,13 @@ app.get("/", (_req, res) => {
 
 import authRouter from "./routes/auth-routes";
 import adminRouter from "./routes/admin-routes";
+import storeRouter from "./routes/store-routes";
 
 app.use("/api/auth", authRouter);
 // admin only routes
 app.use("/api/admin", adminRouter);
+
+app.use("/api/stores", storeRouter);
 
 app.use(errorHandler);
 
