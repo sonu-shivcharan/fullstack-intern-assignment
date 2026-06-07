@@ -118,6 +118,10 @@ const createStore = asyncHandler(async (req, res) => {
     .where(eq(users.email, email))
     .limit(1);
 
+  if (existingOwner?.role !== "STORE_OWNER") {
+    throw new ApiError(400, "User role should STORE_OWNER");
+  }
+
   if (!existingOwner) {
     throw new ApiError(404, "User with id does not exists");
   }
@@ -158,4 +162,21 @@ const createStore = asyncHandler(async (req, res) => {
     );
 });
 
-export { createUser, createStore, getAllUsers };
+const adminDashboard = asyncHandler(async (req, res) => {
+  const [totalUsers, totalStores, totalRatings] = await Promise.all([
+    db.$count(users),
+    db.$count(stores),
+    db.$count(ratings),
+  ]);
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        { totalUsers, totalRatings, totalStores },
+        "Admin Dashboard fetched successfully",
+      ),
+    );
+});
+
+export { createUser, createStore, getAllUsers, adminDashboard };

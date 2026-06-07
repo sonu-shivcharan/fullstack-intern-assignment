@@ -3,6 +3,7 @@ import {
   createUser,
   createStore,
   getAllUsers,
+  adminDashboard,
 } from "../controllers/admin-controllers";
 import { validator } from "../middlewares/validation-middlewares";
 import { signupSchema as createUserSchema } from "../validations/auth-validations";
@@ -16,10 +17,6 @@ adminRouter.use(verifyJWT, verifyAdmin);
 
 adminRouter.get(
   "/users",
-  (r, s, n) => {
-    console.log("middle");
-    n();
-  },
   validator({ queryParser: getUsersQuerySchema }),
   getAllUsers,
 );
@@ -35,5 +32,7 @@ adminRouter.post(
   validator({ bodyParser: storeCreateSchema }),
   createStore,
 );
+
+adminRouter.get("/dashboard", adminDashboard);
 
 export default adminRouter;
