@@ -22,3 +22,6 @@ export const ratings = pgTable(
     unique("user_store_rating_unique").on(rating.storeId, rating.userId),
   ],
 );
+
+export type NewRating = typeof ratings.$inferInsert;
+export type Rating = typeof ratings.$inferSelect;
