@@ -6,7 +6,7 @@ import { errorHandler } from "./middlewares/error-middlewares";
 
 const app = express();
 const MODE = process.env.NODE_ENV == "development" ? "dev" : "tiny";
-
+console.log("", process.env.CORS_ORIGIN);
 app.use(morgan(MODE));
 app.use(
   cors({
@@ -28,6 +28,7 @@ import authRouter from "./routes/auth-routes";
 import adminRouter from "./routes/admin-routes";
 import storeRouter from "./routes/store-routes";
 import ratingRouter from "./routes/rating-routes";
+import storeOwnerRouter from "./routes/store-owner-routes";
 
 app.use("/api/auth", authRouter);
 // admin only routes
@@ -35,6 +36,9 @@ app.use("/api/admin", adminRouter);
 
 app.use("/api/stores", storeRouter);
 app.use("/api/ratings", ratingRouter);
+
+//store owner routes
+app.use("/api/store-owner", storeOwnerRouter);
 
 app.use(errorHandler);
 
