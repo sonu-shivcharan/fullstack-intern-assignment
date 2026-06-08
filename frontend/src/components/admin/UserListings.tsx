@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, type ReactElement } from "react";
 import { getAdminUsers } from "@/helpers/admin-helpers";
 
 import {
@@ -12,7 +12,13 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { Loader } from "../ui/loader";
-import { Search, Star, UserPlus } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  Star,
+  UserPlus,
+} from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -30,12 +36,13 @@ function UserListings() {
   const [roleFilter, setRoleFilter] = useState("ALL");
   const [sortBy, setSortBy] = useState("createdAt");
   const [order, setOrder] = useState<"asc" | "desc">("asc");
+  const [page, setPage] = useState(1);
 
   const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: ["adminUsers", serverSearch, roleFilter, sortBy, order],
+    queryKey: ["adminUsers", serverSearch, roleFilter, sortBy, order, page],
     queryFn: () =>
       getAdminUsers({
-        page: 1,
+        page: page,
         limit: 10,
         sortBy,
         order,
@@ -44,6 +51,7 @@ function UserListings() {
       }),
   });
   const users = data?.docs;
+  const hasMore = data?.hasMore;
 
   const filteredUsers = useMemo(() => {
     if (!users) return [];
@@ -57,6 +65,13 @@ function UserListings() {
         user.address.toLowerCase().includes(term)
     );
   }, [users, searchTerm]);
+
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    if (page > 1) {
+      setPage(1);
+    }
+  };
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -91,7 +106,7 @@ function UserListings() {
             <Input
               placeholder="Search users by name, email, role or address..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchInput}
               className="h-10 rounded-xl pr-24 pl-9"
             />
           </div>
@@ -147,7 +162,7 @@ function UserListings() {
         />
       </div>
 
-      <div className="rounded-md border border-border bg-card">
+      <div className="min-h-[400px] rounded-md border border-border bg-card">
         <Table>
           <TableHeader>
             <TableRow>
@@ -218,7 +233,27 @@ function UserListings() {
         </Table>
       </div>
 
-      {/* AddUserModal is controlled trigger-based in the layout actions header */}
+      <div className="mt-10 flex items-center justify-center gap-4">
+        <Button
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+          variant={"outline"}
+          size={"sm"}
+        >
+          <ChevronLeft />
+          Prev
+        </Button>
+        <div className="rounded bg-accent px-4">{page}</div>
+        <Button
+          disabled={!hasMore}
+          variant={"outline"}
+          size={"sm"}
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+          <ChevronRight />
+        </Button>
+      </div>
     </div>
   );
 }
