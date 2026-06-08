@@ -18,8 +18,8 @@ interface StatCardProps {
   value: number | undefined;
   isLoading: boolean;
   icon: ComponentType<{ className?: string }>;
-  linkTo: string;
-  linkText: string;
+  linkTo?: string;
+  linkText?: string;
 }
 
 function StatCard({
@@ -46,9 +46,11 @@ function StatCard({
       </CardContent>
 
       <CardFooter className="flex justify-end">
-        <Button asChild variant="outline">
-          <Link to={linkTo}>{linkText}</Link>
-        </Button>
+        {linkTo && (
+          <Button asChild variant="outline">
+            <Link to={linkTo}>{linkText}</Link>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
@@ -61,36 +63,31 @@ function AdminDashboard() {
   });
 
   return (
-    <div className="">
-      <h1 className="container mx-auto p-4 text-2xl font-bold">
-        Admin Dashboard
-      </h1>
-      <div className="container mx-auto flex justify-center gap-4">
-        <StatCard
-          title="Total Users"
-          value={stats?.totalUsers}
-          isLoading={isLoading}
-          icon={Users}
-          linkTo="/admin/users"
-          linkText="View Users"
-        />
-        <StatCard
-          title="Total Stores"
-          value={stats?.totalStores}
-          isLoading={isLoading}
-          icon={Store}
-          linkTo="/admin"
-          linkText="View Stores"
-        />
-        <StatCard
-          title="Total Ratings"
-          value={stats?.totalRatings}
-          isLoading={isLoading}
-          icon={Star}
-          linkTo="/admin"
-          linkText="View Ratings"
-        />
-      </div>
+    <div className="container mx-auto flex justify-center gap-4">
+      <StatCard
+        title="Total Users"
+        value={stats?.totalUsers}
+        isLoading={isLoading}
+        icon={Users}
+        linkTo="/admin/users"
+        linkText="View Users"
+      />
+      <StatCard
+        title="Total Stores"
+        value={stats?.totalStores}
+        isLoading={isLoading}
+        icon={Store}
+        linkTo="/admin/stores"
+        linkText="View Stores"
+      />
+      <StatCard
+        title="Total Ratings"
+        value={stats?.totalRatings}
+        isLoading={isLoading}
+        icon={Star}
+        // linkTo="/admin"
+        // linkText="View Ratings"
+      />
     </div>
   );
 }

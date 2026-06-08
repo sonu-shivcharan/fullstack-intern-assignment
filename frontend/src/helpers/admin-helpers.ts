@@ -1,20 +1,17 @@
+import type { User } from "@/types/user";
 import { apiClient } from "../lib/api-client";
 import type { ApiResponse } from "@/types/api";
+import type { SearchParams } from "@/types/search";
 
-export interface DashboardStats {
+export type DashboardStats = {
   totalUsers: number;
   totalStores: number;
   totalRatings: number;
-}
+};
 
-export interface UserListItem {
-  id: number;
-  name: string;
-  email: string;
-  role: "ADMIN" | "USER" | "STORE_OWNER";
-  address: string;
-  createdAt: string;
-}
+export type GetAdminUsersParams = SearchParams & {
+  role?: string;
+};
 
 export async function getAdminDashboardStats(): Promise<DashboardStats> {
   const res =
@@ -22,15 +19,10 @@ export async function getAdminDashboardStats(): Promise<DashboardStats> {
   return res.data.data;
 }
 
-export async function getAdminUsers(params: {
-  page: number;
-  limit: number;
-  sortBy: string;
-  order: "asc" | "desc";
-  search?: string;
-  role?: string;
-}): Promise<UserListItem[]> {
-  const res = await apiClient.get<ApiResponse<UserListItem[]>>("/admin/users", {
+export async function getAdminUsers(
+  params: GetAdminUsersParams,
+): Promise<User[]> {
+  const res = await apiClient.get<ApiResponse<User[]>>("/admin/users", {
     params,
   });
   return res.data.data;
