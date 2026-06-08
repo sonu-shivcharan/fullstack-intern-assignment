@@ -14,7 +14,7 @@ export const signupSchema = z.object({
     .string()
     .min(3, "Name must be at least 3 characters")
     .max(60, "Name must be at most 60 characters"),
-  email: z.string().email("Invalid email address"),
+  email: z.email("Invalid email address"),
   address: z.string().max(400, "Address must be at most 400 characters"),
   password: passwordSchema,
 });
