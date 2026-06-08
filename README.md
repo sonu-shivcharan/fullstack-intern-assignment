@@ -1,3 +1,11 @@
+## Follow project Setup Instructions
+
+### [Frontend Setup ](frontend/README.md)
+
+### [Backend Setup ](frontend/README.md)
+
+# Using Docker compose
+
 # Store Rating Web Application
 
 A full-stack web application that allows users to register, sign in, search registered stores, and submit/modify store ratings from 1 to 5 stars. The system features a unified sign-in flow with role-based dashboard screens for:
@@ -35,9 +43,3 @@ A full-stack web application that allows users to register, sign in, search regi
 ![Admin Stores Management](screenshots/admin-stores.png)
 
 ---
-
-## Follow project Setup Instructions
-
-### [Frontend Setup ](frontend/README.md)
-
-### [Backend Setup ](frontend/README.md)
