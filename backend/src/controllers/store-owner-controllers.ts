@@ -1,4 +1,4 @@
-import { avg, count, eq } from "drizzle-orm";
+import { avg, count, eq, asc, desc } from "drizzle-orm";
 import { db } from "../db";
 import { ratings, stores, users } from "../db/schema";
 import { asyncHandler } from "../utils/async-handler";
@@ -20,6 +20,14 @@ export const getUserByStoreId = asyncHandler(async (req, res) => {
       "You are not associated with any store now, try again later",
     );
   }
+
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+  const order = req.query.order === "asc" ? "asc" : "desc";
+
+  const orderByExpression = order === "asc" ? asc(ratings.createdAt) : desc(ratings.createdAt);
+
   const allUsersByStore = await db
     .select({
       id: users.id,
@@ -35,12 +43,21 @@ export const getUserByStoreId = asyncHandler(async (req, res) => {
     })
     .from(ratings)
     .innerJoin(users, eq(users.id, ratings.userId))
-    .where(eq(ratings.storeId, userStore.id));
+    .where(eq(ratings.storeId, userStore.id))
+    .orderBy(orderByExpression)
+    .limit(limit + 1)
+    .offset(offset);
+
+  const hasMore = allUsersByStore.length > limit;
+  const dataToReturn = hasMore ? allUsersByStore.slice(0, limit) : allUsersByStore;
+  const nextPage = hasMore ? page + 1 : null;
 
   return res.status(200).json(
     new ApiResponse(
       {
-        users: allUsersByStore,
+        users: dataToReturn,
+        nextPage,
+        hasMore,
       },
       "Users fetched successfully",
     ),
