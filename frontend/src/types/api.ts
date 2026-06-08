@@ -12,3 +12,9 @@ export interface ApiErrorResponse {
   success: false;
   errors: any;
 }
+
+export interface PaginatedResponse<T> {
+  docs: T[];
+  hasMore: boolean;
+  nextPage: number | null;
+}

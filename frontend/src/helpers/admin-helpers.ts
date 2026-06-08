@@ -1,6 +1,6 @@
 import type { User } from "@/types/user";
 import { apiClient } from "../lib/api-client";
-import type { ApiResponse } from "@/types/api";
+import type { PaginatedResponse, ApiResponse } from "@/types/api";
 import type { SearchParams } from "@/types/search";
 
 export type DashboardStats = {
@@ -20,11 +20,14 @@ export async function getAdminDashboardStats(): Promise<DashboardStats> {
 }
 
 export async function getAdminUsers(
-  params: GetAdminUsersParams,
-): Promise<User[]> {
-  const res = await apiClient.get<ApiResponse<User[]>>("/admin/users", {
-    params,
-  });
+  params: GetAdminUsersParams
+): Promise<PaginatedResponse<User>> {
+  const res = await apiClient.get<ApiResponse<PaginatedResponse<User>>>(
+    "/admin/users",
+    {
+      params,
+    }
+  );
   return res.data.data;
 }
 
@@ -39,7 +42,8 @@ export async function createAdminStore(payload: any): Promise<any> {
 }
 
 export async function getAdminUsersWithoutStore(): Promise<{ users: User[] }> {
-  const res = await apiClient.get<ApiResponse<{ users: User[] }>>("/admin/users-without-store");
+  const res = await apiClient.get<ApiResponse<{ users: User[] }>>(
+    "/admin/users-without-store"
+  );
   return res.data.data;
 }
-

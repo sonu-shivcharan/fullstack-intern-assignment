@@ -31,12 +31,7 @@ function UserListings() {
   const [sortBy, setSortBy] = useState("createdAt");
   const [order, setOrder] = useState<"asc" | "desc">("asc");
 
-  const {
-    data: users,
-    isLoading,
-    isFetching,
-    error,
-  } = useQuery({
+  const { data, isLoading, isFetching, error } = useQuery({
     queryKey: ["adminUsers", serverSearch, roleFilter, sortBy, order],
     queryFn: () =>
       getAdminUsers({
@@ -48,6 +43,7 @@ function UserListings() {
         role: roleFilter === "ALL" ? undefined : roleFilter,
       }),
   });
+  const users = data?.docs;
 
   const filteredUsers = useMemo(() => {
     if (!users) return [];
