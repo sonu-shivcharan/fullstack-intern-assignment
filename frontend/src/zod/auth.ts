@@ -28,3 +28,6 @@ export const changePasswordSchema = z.object({
   oldPassword: z.string().min(1, "Old password is required"),
   newPassword: passwordSchema,
 });
+
+export type SignupFormValues = z.infer<typeof signupSchema>;
+export type SigninFormValues = z.infer<typeof signinSchema>;

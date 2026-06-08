@@ -6,6 +6,7 @@ export interface User {
   address: string;
   email: string;
   role: UserRole;
+  storeAvgRating?: string | number | null;
   createdAt: string;
   updatedAt: string;
 }

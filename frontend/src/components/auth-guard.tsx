@@ -15,7 +15,6 @@ export const AuthGuard: React.FC<{ children: React.ReactNode }> = ({
   const isOwnerRoute = pathname.startsWith("/owner");
   useEffect(() => {
     if (isAuthenticated && user) {
-      console.log("user", user);
       if (isPublicRoute) {
         if (user.role === "ADMIN") {
           navigate({ to: "/admin" });
