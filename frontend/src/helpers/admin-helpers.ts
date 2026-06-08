@@ -37,3 +37,9 @@ export async function createAdminStore(payload: any): Promise<any> {
   const res = await apiClient.post<ApiResponse<any>>("/admin/stores", payload);
   return res.data.data;
 }
+
+export async function getAdminUsersWithoutStore(): Promise<{ users: User[] }> {
+  const res = await apiClient.get<ApiResponse<{ users: User[] }>>("/admin/users-without-store");
+  return res.data.data;
+}
+
