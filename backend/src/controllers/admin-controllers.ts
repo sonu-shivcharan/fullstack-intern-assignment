@@ -12,6 +12,7 @@ import ApiError from "../utils/api-error";
 import { ApiResponse } from "../utils/api-response";
 import bcrypt from "bcrypt";
 import type { GetUsersQuerySchema } from "../validations/admin-validations";
+import { paginatedResponse } from "../utils/paginated-response";
 
 const createUser = asyncHandler(async (req, res) => {
   const {
@@ -117,12 +118,14 @@ const getAllUsers = asyncHandler(async (req, res) => {
     )
     .where(whereClause)
     .orderBy(orderByExpression)
-    .limit(limit)
+    .limit(limit + 1)
     .offset(offset);
+
+  const paginatedData = paginatedResponse(allUsers, limit, page);
 
   return res
     .status(200)
-    .json(new ApiResponse(allUsers, "Users fetched successfully"));
+    .json(new ApiResponse(paginatedData, "Users fetched successfully"));
 });
 
 const getUsersWithoutStore = asyncHandler(async (req, res) => {
