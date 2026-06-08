@@ -40,5 +40,5 @@ export async function signOut(): Promise<void> {
 export async function changePassword(
   values: ChangePasswordFormValues
 ): Promise<void> {
-  await apiClient.post<ApiResponse<any>>("/auth/change-password", values);
+  await apiClient.patch<ApiResponse<any>>("/auth/change-password", values);
 }
