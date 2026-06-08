@@ -9,24 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UserRouteImport } from './routes/_user'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as OwnerIndexRouteImport } from './routes/owner/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as StoreStoreIdRouteImport } from './routes/store/$storeId'
+import { Route as UserIndexRouteImport } from './routes/_user.index'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminStoresRouteImport } from './routes/admin/stores'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authSigninRouteImport } from './routes/(auth)/signin'
+import { Route as UserStoreStoreIdRouteImport } from './routes/_user.store.$storeId'
 
+const UserRoute = UserRouteImport.update({
+  id: '/_user',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OwnerIndexRoute = OwnerIndexRouteImport.update({
@@ -39,10 +39,10 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const StoreStoreIdRoute = StoreStoreIdRouteImport.update({
-  id: '/store/$storeId',
-  path: '/store/$storeId',
-  getParentRoute: () => rootRouteImport,
+const UserIndexRoute = UserIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => UserRoute,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
@@ -64,98 +64,104 @@ const authSigninRoute = authSigninRouteImport.update({
   path: '/signin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UserStoreStoreIdRoute = UserStoreStoreIdRouteImport.update({
+  id: '/store/$storeId',
+  path: '/store/$storeId',
+  getParentRoute: () => UserRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/': typeof UserIndexRoute
   '/signin': typeof authSigninRoute
   '/signup': typeof authSignupRoute
   '/admin/stores': typeof AdminStoresRoute
   '/admin/users': typeof AdminUsersRoute
-  '/store/$storeId': typeof StoreStoreIdRoute
   '/admin/': typeof AdminIndexRoute
   '/owner/': typeof OwnerIndexRoute
+  '/store/$storeId': typeof UserStoreStoreIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/signin': typeof authSigninRoute
   '/signup': typeof authSignupRoute
   '/admin/stores': typeof AdminStoresRoute
   '/admin/users': typeof AdminUsersRoute
-  '/store/$storeId': typeof StoreStoreIdRoute
+  '/': typeof UserIndexRoute
   '/admin': typeof AdminIndexRoute
   '/owner': typeof OwnerIndexRoute
+  '/store/$storeId': typeof UserStoreStoreIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/_user': typeof UserRouteWithChildren
   '/(auth)/signin': typeof authSigninRoute
   '/(auth)/signup': typeof authSignupRoute
   '/admin/stores': typeof AdminStoresRoute
   '/admin/users': typeof AdminUsersRoute
-  '/store/$storeId': typeof StoreStoreIdRoute
+  '/_user/': typeof UserIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/owner/': typeof OwnerIndexRoute
+  '/_user/store/$storeId': typeof UserStoreStoreIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/admin'
+    | '/'
     | '/signin'
     | '/signup'
     | '/admin/stores'
     | '/admin/users'
-    | '/store/$storeId'
     | '/admin/'
     | '/owner/'
+    | '/store/$storeId'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/signin'
     | '/signup'
     | '/admin/stores'
     | '/admin/users'
-    | '/store/$storeId'
-    | '/admin'
-    | '/owner'
-  id:
-    | '__root__'
     | '/'
     | '/admin'
+    | '/owner'
+    | '/store/$storeId'
+  id:
+    | '__root__'
+    | '/admin'
+    | '/_user'
     | '/(auth)/signin'
     | '/(auth)/signup'
     | '/admin/stores'
     | '/admin/users'
-    | '/store/$storeId'
+    | '/_user/'
     | '/admin/'
     | '/owner/'
+    | '/_user/store/$storeId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  UserRoute: typeof UserRouteWithChildren
   authSigninRoute: typeof authSigninRoute
   authSignupRoute: typeof authSignupRoute
-  StoreStoreIdRoute: typeof StoreStoreIdRoute
   OwnerIndexRoute: typeof OwnerIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_user': {
+      id: '/_user'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof UserRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/owner/': {
@@ -172,12 +178,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/store/$storeId': {
-      id: '/store/$storeId'
-      path: '/store/$storeId'
-      fullPath: '/store/$storeId'
-      preLoaderRoute: typeof StoreStoreIdRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_user/': {
+      id: '/_user/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof UserIndexRouteImport
+      parentRoute: typeof UserRoute
     }
     '/admin/users': {
       id: '/admin/users'
@@ -207,6 +213,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authSigninRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_user/store/$storeId': {
+      id: '/_user/store/$storeId'
+      path: '/store/$storeId'
+      fullPath: '/store/$storeId'
+      preLoaderRoute: typeof UserStoreStoreIdRouteImport
+      parentRoute: typeof UserRoute
+    }
   }
 }
 
@@ -226,12 +239,23 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
   AdminRouteRouteChildren,
 )
 
+interface UserRouteChildren {
+  UserIndexRoute: typeof UserIndexRoute
+  UserStoreStoreIdRoute: typeof UserStoreStoreIdRoute
+}
+
+const UserRouteChildren: UserRouteChildren = {
+  UserIndexRoute: UserIndexRoute,
+  UserStoreStoreIdRoute: UserStoreStoreIdRoute,
+}
+
+const UserRouteWithChildren = UserRoute._addFileChildren(UserRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
+  UserRoute: UserRouteWithChildren,
   authSigninRoute: authSigninRoute,
   authSignupRoute: authSignupRoute,
-  StoreStoreIdRoute: StoreStoreIdRoute,
   OwnerIndexRoute: OwnerIndexRoute,
 }
 export const routeTree = rootRouteImport

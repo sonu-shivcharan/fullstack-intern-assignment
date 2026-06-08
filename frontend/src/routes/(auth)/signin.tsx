@@ -26,5 +26,3 @@ function SigninPage() {
     </div>
   );
 }
-
-export default SigninPage;

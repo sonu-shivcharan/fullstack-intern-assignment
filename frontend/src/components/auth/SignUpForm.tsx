@@ -1,16 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+
 import { toast } from "sonner";
 import { FormField } from "@/components/ui/form-field";
-import { Button } from "@/components/ui/button";
+import LoaderButton from "@/components/ui/loader-button";
 import { CardContent, CardFooter } from "@/components/ui/card";
-import { signupSchema } from "@/zod/auth";
+import { signupSchema, type SignupFormValues } from "@/zod/auth";
 import { signUp } from "@/helpers/auth-helpers";
-
-type SignupFormValues = z.infer<typeof signupSchema>;
 
 export function SignUpForm() {
   const navigate = useNavigate();
@@ -78,9 +76,9 @@ export function SignUpForm() {
         />
       </CardContent>
       <CardFooter className="flex flex-col gap-4">
-        <Button className="w-full" type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Creating account..." : "Sign up"}
-        </Button>
+        <LoaderButton className="w-full" type="submit" isLoading={isSubmitting}>
+          Sign up
+        </LoaderButton>
         <div className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}
           <Link

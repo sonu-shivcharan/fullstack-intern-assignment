@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/contexts/auth-context";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getUserStores } from "@/helpers/user-helpers";
 
-import { Star, MapPin, Search, Store } from "lucide-react";
+import { Star, MapPin, Search, Store, ArrowRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Loader } from "@/components/ui/loader";
 import {
@@ -29,7 +28,6 @@ interface DashboardStore {
 }
 
 export function UserDashboard() {
-  const { user: currentUser } = useAuth();
   const [search, setSearch] = useState("");
 
   const { data: storesData, isLoading } = useQuery<DashboardStore[]>({
@@ -146,7 +144,7 @@ export function StoreCard({ store }: StoreCardProps) {
             variant="outline"
             className="h-9 w-full cursor-pointer rounded-xl text-xs"
           >
-            View Details & Rate
+            View Details & Rate <ArrowRight />
           </Button>
         </Link>
       </CardFooter>

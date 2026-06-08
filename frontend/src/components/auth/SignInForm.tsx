@@ -1,17 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 import { FormField } from "@/components/ui/form-field";
-import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter } from "@/components/ui/card";
-import { signinSchema } from "@/zod/auth";
+import { signinSchema, type SigninFormValues } from "@/zod/auth";
 import { signIn } from "@/helpers/auth-helpers";
-
-type SigninFormValues = z.infer<typeof signinSchema>;
+import LoaderButton from "../ui/loader-button";
 
 export function SignInForm() {
   const navigate = useNavigate();
@@ -68,9 +66,7 @@ export function SignInForm() {
         />
       </CardContent>
       <CardFooter className="flex flex-col gap-4">
-        <Button className="w-full" type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Signing in..." : "Sign in"}
-        </Button>
+        <LoaderButton isLoading={isSubmitting}>Sign in</LoaderButton>
         <div className="text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
           <Link
