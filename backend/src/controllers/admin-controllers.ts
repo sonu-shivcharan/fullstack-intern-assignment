@@ -90,6 +90,16 @@ const getAllUsers = asyncHandler(async (req, res) => {
   const orderByExpression =
     order === "desc" ? desc(sortByColumn) : asc(sortByColumn);
 
+  const storeAvgRatingSubquery = db
+    .select({
+      ownerId: stores.ownerId,
+      avgRating: avg(ratings.rating).as("avgRating"),
+    })
+    .from(stores)
+    .leftJoin(ratings, eq(stores.id, ratings.storeId))
+    .groupBy(stores.ownerId)
+    .as("store_avg");
+
   const allUsers = await db
     .select({
       id: users.id,
@@ -98,8 +108,13 @@ const getAllUsers = asyncHandler(async (req, res) => {
       role: users.role,
       address: users.address,
       createdAt: users.createdAt,
+      storeAvgRating: storeAvgRatingSubquery.avgRating,
     })
     .from(users)
+    .leftJoin(
+      storeAvgRatingSubquery,
+      eq(users.id, storeAvgRatingSubquery.ownerId),
+    )
     .where(whereClause)
     .orderBy(orderByExpression)
     .limit(limit)

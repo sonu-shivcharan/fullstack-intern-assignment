@@ -1,4 +1,4 @@
-import { and, asc, avg, desc, eq, ilike, or } from "drizzle-orm";
+import { and, asc, avg, count, desc, eq, ilike, or } from "drizzle-orm";
 import { db } from "../db";
 import { ratings, stores } from "../db/schema";
 import { asyncHandler } from "../utils/async-handler";
@@ -53,9 +53,19 @@ const getAllStores = asyncHandler(async (req, res) => {
     order === "desc" ? desc(sortByColumn) : asc(sortByColumn);
 
   const allStores = await db
-    .select()
+    .select({
+      id: stores.id,
+      name: stores.name,
+      email: stores.email,
+      address: stores.address,
+      createdAt: stores.createdAt,
+      avgRating: avg(ratings.rating),
+      totalRatings: count(ratings.id),
+    })
     .from(stores)
+    .leftJoin(ratings, eq(ratings.storeId, stores.id))
     .where(whereClause)
+    .groupBy(stores.id)
     .orderBy(orderByExpression)
     .limit(limit)
     .offset(offset);
