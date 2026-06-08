@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { Loader } from "../ui/loader";
-import { Search, Star } from "lucide-react";
+import { Search, Star, Store } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -20,6 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import AddStoreModal from "./AddStoreModal";
+
 
 function StoreListings() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,7 +40,7 @@ function StoreListings() {
     queryFn: () =>
       getAllStores({
         page: 1,
-        limit: 5,
+        limit: 10,
         sortBy,
         order,
         search: serverSearch || undefined,
@@ -121,6 +124,13 @@ function StoreListings() {
             </div>
           </div>
         </div>
+        <AddStoreModal
+          trigger={
+            <Button>
+              <Store className="h-4 w-4" /> Add Store
+            </Button>
+          }
+        />
       </div>
 
       <div className="rounded-md border border-border bg-card">

@@ -1,4 +1,4 @@
-import { eq, and, ilike, or, asc, desc, avg } from "drizzle-orm";
+import { eq, and, ilike, or, asc, desc, avg, isNull } from "drizzle-orm";
 import { db } from "../db";
 import {
   ratings,
@@ -125,6 +125,30 @@ const getAllUsers = asyncHandler(async (req, res) => {
     .json(new ApiResponse(allUsers, "Users fetched successfully"));
 });
 
+const getUsersWithoutStore = asyncHandler(async (req, res) => {
+  const usersWithoutStore = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      address: users.address,
+      role: users.role,
+      createdAt: users.createdAt,
+    })
+    .from(users)
+    .leftJoin(stores, eq(users.id, stores.ownerId))
+    .where(isNull(stores.id));
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        { users: usersWithoutStore },
+        "Users fetched successfully",
+      ),
+    );
+});
+
 const createStore = asyncHandler(async (req, res) => {
   const { name, email, address, ownerId }: NewStore = req.body;
 
@@ -195,4 +219,10 @@ const adminDashboard = asyncHandler(async (req, res) => {
     );
 });
 
-export { createUser, createStore, getAllUsers, adminDashboard };
+export {
+  createUser,
+  createStore,
+  getAllUsers,
+  adminDashboard,
+  getUsersWithoutStore,
+};

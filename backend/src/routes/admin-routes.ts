@@ -4,6 +4,7 @@ import {
   createStore,
   getAllUsers,
   adminDashboard,
+  getUsersWithoutStore,
 } from "../controllers/admin-controllers";
 import { validator } from "../middlewares/validation-middlewares";
 import { signupSchema as createUserSchema } from "../validations/auth-validations";
@@ -20,6 +21,7 @@ adminRouter.get(
   validator({ queryParser: getUsersQuerySchema }),
   getAllUsers,
 );
+adminRouter.get("/users-without-store", getUsersWithoutStore);
 
 adminRouter.post(
   "/users",

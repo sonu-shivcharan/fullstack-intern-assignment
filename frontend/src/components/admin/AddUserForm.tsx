@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema } from "@/zod/auth";
 import { z } from "zod";
+import { AlertDialogCancel } from "../ui/alert-dialog";
 
 export interface AddUserFormProps {
   onSuccess?: () => void;
@@ -60,9 +61,9 @@ export function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
       onSuccess?.();
     },
-    onError: (err: any) => {
+    onError: (err) => {
       const msg =
-        err.response?.data?.message || err.message || "Failed to create user";
+        err.message || "Failed to create user";
       toast.error(msg);
     },
   });
@@ -129,11 +130,11 @@ export function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
         </div>
       </div>
       <div className="flex justify-end gap-3 pt-6">
-        {onCancel && (
+       <AlertDialogCancel asChild>
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-        )}
+       </AlertDialogCancel>
         <LoaderButton type="submit" isLoading={isPending} className="w-auto">
           Create User
         </LoaderButton>

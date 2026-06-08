@@ -41,7 +41,7 @@ function UserListings() {
     queryFn: () =>
       getAdminUsers({
         page: 1,
-        limit: 5,
+        limit: 10,
         sortBy,
         order,
         search: serverSearch || undefined,
@@ -70,7 +70,7 @@ function UserListings() {
       return;
     }
 
-    if (filteredUsers.length === 0 && serverSearch !== searchTerm) {
+    if (filteredUsers.length < 5 && serverSearch !== searchTerm) {
       const handler = setTimeout(() => {
         setServerSearch(searchTerm);
       }, 400);
