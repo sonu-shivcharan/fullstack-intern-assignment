@@ -1,24 +1,45 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "@tanstack/react-router";
 import { useAuth } from "@/contexts/auth-context";
+import LoaderPage from "./ui/loader";
 
+const publicRoutes = ["/signin", "/signup"];
 export const AuthGuard: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated, checkRole, isLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location.pathname;
 
-  const isPublicRoute = pathname === "/signin" || pathname === "/signup";
+  const isPublicRoute = publicRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
   const isAdminRoute = pathname.startsWith("/admin");
   const isOwnerRoute = pathname.startsWith("/owner");
+
   useEffect(() => {
-    if (isAuthenticated && user) {
+    if (isLoading) {
+      return;
+    }
+    if (!isAuthenticated && !isPublicRoute) {
+      navigate({ to: "/signin" });
+      return;
+    }
+
+    if (isAuthenticated) {
       if (isPublicRoute) {
-        if (user.role === "ADMIN") {
+        if (checkRole("ADMIN")) {
           navigate({ to: "/admin" });
-        } else if (user.role === "STORE_OWNER") {
+        } else if (checkRole("STORE_OWNER")) {
+          navigate({ to: "/owner" });
+        } else {
+          navigate({ to: "/" });
+        }
+        return;
+      }
+      if (isAdminRoute && !checkRole("ADMIN")) {
+        if (checkRole("STORE_OWNER")) {
           navigate({ to: "/owner" });
         } else {
           navigate({ to: "/" });
@@ -26,17 +47,8 @@ export const AuthGuard: React.FC<{ children: React.ReactNode }> = ({
         return;
       }
 
-      if (isAdminRoute && user.role !== "ADMIN") {
-        if (user.role === "STORE_OWNER") {
-          navigate({ to: "/owner" });
-        } else {
-          navigate({ to: "/" });
-        }
-        return;
-      }
-
-      if (isOwnerRoute && user.role !== "STORE_OWNER") {
-        if (user.role === "ADMIN") {
+      if (isOwnerRoute && !checkRole("STORE_OWNER")) {
+        if (checkRole("ADMIN")) {
           navigate({ to: "/admin" });
         } else {
           navigate({ to: "/" });
@@ -45,24 +57,21 @@ export const AuthGuard: React.FC<{ children: React.ReactNode }> = ({
       }
 
       if (pathname === "/") {
-        if (user.role === "ADMIN") {
+        if (checkRole("ADMIN")) {
           navigate({ to: "/admin" });
-        } else if (user.role === "STORE_OWNER") {
+        } else if (checkRole("STORE_OWNER")) {
           navigate({ to: "/owner" });
         }
-      }
-    } else {
-      if (!isPublicRoute) {
-        navigate({ to: "/signin" });
+        return;
       }
     }
-  }, [isAuthenticated, user, pathname, navigate]);
+  }, [isAuthenticated, pathname, navigate, isLoading]);
 
-  if (isAuthenticated && user) {
-    return <>{children}</>;
+  if (isLoading) {
+    return <LoaderPage />;
   }
-  if (!isPublicRoute) {
-    return null;
+  if (!isAuthenticated && !isPublicRoute) {
+    return <LoaderPage />;
   }
   return <>{children}</>;
 };

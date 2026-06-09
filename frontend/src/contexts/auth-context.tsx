@@ -2,7 +2,6 @@ import React, { createContext, useContext } from "react";
 import type { User, UserRole } from "@/types/user";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCurrentUser } from "@/helpers/auth-helpers";
-import LoaderPage from "@/components/ui/loader";
 
 interface AuthContextType {
   user: User | null;
@@ -10,6 +9,7 @@ interface AuthContextType {
   login: (user: User | null) => void;
   logout: () => void;
   isAuthenticated: boolean;
+  isLoading: boolean;
   checkRole: (role: UserRole) => boolean;
 }
 
@@ -29,11 +29,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     queryKey: ["currentUser"],
     queryFn: getCurrentUser,
     retry: false,
+    refetchOnWindowFocus: false,
   });
 
-  const user = data ? data : null;
-  const isAuthenticated = !!data;
-  console.log("user", user);
+  const user = data ?? null;
+  const isAuthenticated = user !== null;
 
   const setUser = (newUser: User | null) => {
     queryClient.setQueryData(["currentUser"], newUser);
@@ -50,10 +50,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return user?.role === role;
   };
 
-  if (isLoading) {
-    return <LoaderPage />;
-  }
-
   return (
     <AuthContext.Provider
       value={{
@@ -63,6 +59,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser,
         login,
         logout,
+        isLoading,
       }}
     >
       {children}
