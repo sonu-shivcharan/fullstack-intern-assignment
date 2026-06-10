@@ -10,11 +10,11 @@ A full-stack web application that allows users to register, sign in, search regi
 
 ## Follow project Setup Instructions
 
-### [Frontend Setup ](frontend/README.md)
+- [Frontend Setup ](frontend/README.md)
 
-### [Backend Setup ](backend/README.md)
+- [Backend Setup ](backend/README.md)
 
-## Using Docker Compose
+## Or Using Docker Compose 
 
 ### Prerequisites
 
