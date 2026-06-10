@@ -29,6 +29,7 @@ import adminRouter from "./routes/admin-routes";
 import storeRouter from "./routes/store-routes";
 import ratingRouter from "./routes/rating-routes";
 import storeOwnerRouter from "./routes/store-owner-routes";
+import healthRouter from "./routes/health-routes";
 
 app.use("/api/auth", authRouter);
 // admin only routes
@@ -39,6 +40,9 @@ app.use("/api/ratings", ratingRouter);
 
 //store owner routes
 app.use("/api/store-owner", storeOwnerRouter);
+
+// health check
+app.use("/api/health", healthRouter);
 
 app.use(errorHandler);
 
