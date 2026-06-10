@@ -9,6 +9,7 @@ COPY package.json ./
 RUN npm install
 
 COPY . .
+ENV VITE_API_URL=http://localhost:5000/api
 
 RUN npm run build
 
