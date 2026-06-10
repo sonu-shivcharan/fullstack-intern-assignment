@@ -1,6 +1,6 @@
 # Frontend Setup Guide
 
-The frontend is built with React 19, Vite, TanStack Start/Router, and styled with Tailwind CSS (v4) and Radix UI primitives.
+The frontend is built with React 19, Vite, TanStack Start/Router, and styled with Tailwind CSS (v4) and ShadcnUI
 
 ## Prerequisites
 
